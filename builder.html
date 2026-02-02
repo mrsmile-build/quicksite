@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickSite Builder</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f4f8; color: #111; }
+    h1 { font-size: 28px; text-align: center; margin-bottom: 10px; }
+    p { text-align: center; margin-bottom: 20px; }
+    input, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #ccc; font-size: 16px; }
+    button { width: 100%; padding: 15px; font-size: 18px; border: none; border-radius: 6px; background: #3b82f6; color: white; cursor: pointer; margin-top: 10px; }
+    button:hover { background: #2563eb; }
+  </style>
+</head>
+<body>
+
+<h1>QuickSite Builder</h1>
+<p>Type your website info below:</p>
+
+<input type="text" id="siteName" placeholder="Website Name" />
+<input type="text" id="siteTitle" placeholder="Title / Tagline" />
+<textarea id="siteContent" rows="6" placeholder="About your site..."></textarea>
+
+<button>Generate Preview</button>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js" defer></script>
+
+<script>
+window.onload = function() {
+  const firebaseConfig = {
+    apiKey: "AIzaSyCYpTsNSeR_pMSevDXci-lh1H_YK2ALdso",
+    authDomain: "quicksite-online.firebaseapp.com",
+    databaseURL: "https://quicksite-online-default-rtdb.firebaseio.com",
+    projectId: "quicksite-online",
+    storageBucket: "quicksite-online.firebasestorage.app",
+    messagingSenderId: "329175119630",
+    appId: "1:329175119630:web:aecd944fa49d1426f7c95f"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  document.querySelector('button').onclick = function() {
+    const siteName = document.getElementById('siteName').value;
+    const siteTitle = document.getElementById('siteTitle').value;
+    const siteContent = document.getElementById('siteContent').value;
+
+    if(!siteName) { alert("Website Name is required!"); return; }
+
+    const siteId = 'site_' + Date.now();
+
+    database.ref('sites/' + siteId).set({
+      name: siteName,
+      title: siteTitle,
+      content: siteContent
+    })
+    .then(() => {
+      alert("Site saved online ✅");
+      window.location.href = 'preview.html?siteId=' + siteId;
+    })
+    .catch(err => alert("Error saving: " + err));
+  }
+}
+</script>
+
+</body>
+  </html>
