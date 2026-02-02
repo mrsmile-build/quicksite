@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickSite Preview</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f4f8; color: #111; }
+    h1 { text-align: center; font-size: 28px; margin-bottom: 10px; }
+    h2 { text-align: center; font-size: 22px; margin-bottom: 20px; }
+    p { text-align: center; font-size: 16px; }
+  </style>
+</head>
+<body>
+
+<h1 id="siteName">Loading...</h1>
+<h2 id="siteTitle"></h2>
+<p id="siteContent"></p>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js" defer></script>
+
+<script>
+window.onload = function() {
+  const firebaseConfig = {
+    apiKey: "AIzaSyCYpTsNSeR_pMSevDXci-lh1H_YK2ALdso",
+    authDomain: "quicksite-online.firebaseapp.com",
+    databaseURL: "https://quicksite-online-default-rtdb.firebaseio.com",
+    projectId: "quicksite-online",
+    storageBucket: "quicksite-online.firebasestorage.app",
+    messagingSenderId: "329175119630",
+    appId: "1:329175119630:web:aecd944fa49d1426f7c95f"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  // Get siteId from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const siteId = urlParams.get('siteId');
+
+  if(siteId) {
+    database.ref('sites/' + siteId).once('value').then(snapshot => {
+      const data = snapshot.val();
+      if(data) {
+        document.getElementById('siteName').innerText = data.name;
+        document.getElementById('siteTitle').innerText = data.title;
+        document.getElementById('siteContent').innerText = data.content;
+      } else {
+        document.getElementById('siteName').innerText = "Site not found";
+      }
+    }).catch(err => alert("Error loading site: " + err));
+  } else {
+    document.getElementById('siteName').innerText = "No site selected";
+  }
+}
+</script>
+
+</body>
+  </html>
